@@ -350,10 +350,10 @@ class videoloop(observer.observer, observable.observable):
                 for detection in os.listdir(fileDir):
                     if os.path.isdir(fileDir+'/'+detection):   
                         if os.path.exists(fileDir+'/'+detection+'.mp4'):
-                            path_to_move=fileDir.replace('/', "\\")+'\\'+detection
+                            path_to_move=fileDir+'/'+detection
                             avi_file=path_to_move+'.mp4'
                             move(avi_file, path_to_move)
-            return self.motion_file_name                
+            return self.motion_file_name
         except:
             # Add timestamp to errors
             sys.stderr.write("%s " % datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S,%f"))

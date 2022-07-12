@@ -14,7 +14,7 @@ from subprocess import Popen, PIPE, STDOUT
 #A função é recursiva, em que vai sempre ser chamada até sejam listadas todas as subdiretorias de uma diretoria
 #Todas estas diretorias são adicionadas à lista subfolders[]
 def get_all_dirs(dirname):
-    subfolders = [f.path for f in scandir(dirname) if f.is_dir()]
+    subfolders = [Path(f.path).as_posix() for f in scandir(dirname) if f.is_dir()]
     for dirname in list(subfolders):
         subfolders.extend(get_all_dirs(dirname))
     return subfolders
@@ -43,7 +43,7 @@ def get_all_mp4_files_in_dirs(all_dirs):
             #Caso seja, adiciona à lista all_mp4_files[] com o caminho ("path") completo do ficheiro
             filename, file_extension = path.splitext(u)
             if file_extension.lower() == '.mp4' or file_extension.lower() == '.avi':
-                all_mp4_files.append(Path(i+"//"+filename+file_extension))
+                all_mp4_files.append(Path(i+"/"+filename+file_extension).as_posix())
     return all_mp4_files
 
 
@@ -62,10 +62,10 @@ def ffmpeg_joiner(videos_to_join, out_file_name, output_file_path):
 
     #https://stackoverflow.com/questions/17668996/python-how-to-join-multiple-video-files
     # set output filename
-    outFile = Path(output_file_path+'/joined_videos/'+out_file_name+'.mp4')
+    outFile = output_file_path+'/joined_videos/'+out_file_name+'.mp4'
 
     # create file object that will contain files for ffmpeg to concat
-    input_files_path = Path(output_file_path+'/joined_videos/temp_videos_paths.txt')
+    input_files_path = output_file_path+'/joined_videos/temp_videos_paths.txt'
 
     # this seems to be the proper concat input, with the path containing the list
     # of files for ffmpeg to concat, along with the format parameter, and safe, if i
@@ -86,7 +86,7 @@ def ffmpeg_joiner(videos_to_join, out_file_name, output_file_path):
 
     # something, something, run.
     #ffOutput.run(overwrite_output=True)
-    process = Popen('ffmpeg -f concat -safe 0 -loglevel error -stats -i '+ input_files_path.as_posix() +' -y ' + outFile.as_posix(), stdout=PIPE, stderr=STDOUT, shell = True, bufsize = 1, encoding='utf-8', errors = 'replace')
+    process = Popen('ffmpeg -f concat -safe 0 -loglevel error -stats -i '+ input_files_path +' -y ' + outFile, stdout=PIPE, stderr=STDOUT, shell = True, bufsize = 1, encoding='utf-8', errors = 'replace')
     while True:
         realtime_output = process.stdout.readline()
         if realtime_output == '' and process.poll() is not None:
@@ -99,7 +99,7 @@ def ffmpeg_joiner(videos_to_join, out_file_name, output_file_path):
     remove(input_files_path)
 
     #Devolver o caminho do ficheiro final
-    return outFile.as_posix()
+    return outFile
 
 
 def run_motiondetector(joined_video, result_name, config_file_path, output_file_path, mp4_files):
@@ -109,7 +109,7 @@ def run_motiondetector(joined_video, result_name, config_file_path, output_file_
 
     parser.set('camera', 'url', joined_video)
     parser.set('camera', 'name', result_name)
-    parser.set('camera', 'recorddir', output_file_path+'\\results')
+    parser.set('camera', 'recorddir', output_file_path+'/results')
     # Writing our configuration file to 'example.ini'
     with open(config_file_path, 'w') as configfile:
         parser.write(configfile)
@@ -156,11 +156,11 @@ def join_videos_by_day(folder_path, output_file_path, config_file_path, day):
     day_exists=False
 
     #Procura na pasta "record" pelas subpastas dos dias de gravação
-    subfolders = [f.path for f in scandir(folder_path) if f.is_dir()]
+    subfolders = [Path(f.path).as_posix() for f in scandir(folder_path) if f.is_dir()]
 
     #Vai percorrer cada um desses dias
     for subfolder in subfolders:
-        if subfolder.split("\\")[-1] == day:
+        if subfolder.split("/")[-1] == day:
             day_exists = True
 
             #Procura todas as subpastas
@@ -170,7 +170,7 @@ def join_videos_by_day(folder_path, output_file_path, config_file_path, day):
             all_files_in_folders = get_all_mp4_files_in_dirs(all_folders)
 
             #Algoritmo para dar o nome ao vídeo final, neste caso vai ser "Vido_dia_DIA-MÊS-ANO"
-            video_name = subfolder.split("\\")[-1]
+            video_name = subfolder.split("/")[-1]
             video_name = video_name[-2:] +"-"+ video_name[4:6] +"-"+ video_name[:-4]
 
             #Chamda da função que vai juntar os vídeos encontrados, recebe como parametros a lista de vídeos e o nome do vídeo final
@@ -190,13 +190,13 @@ def join_videos_by_hour(folder_path, output_file_path, config_file_path):
     joined_videos={}
 
     #Procura na pasta "record" pelas subpastas dos dias de gravação
-    subfolders = [f.path for f in scandir(folder_path) if f.is_dir()]
+    subfolders = [Path(f.path).as_posix() for f in scandir(folder_path) if f.is_dir()]
 
     #Vai percorrer cada um desses dias
     for subfolder in subfolders:
 
         #Procura na pasta do dia pelas subpastas das horas de gravação
-        hours=[f.path for f in scandir(subfolder) if f.is_dir()]
+        hours=[Path(f.path).as_posix() for f in scandir(subfolder) if f.is_dir()]
 
         #Percorre cada uma dessas horas
         for hour in hours:
@@ -207,9 +207,9 @@ def join_videos_by_hour(folder_path, output_file_path, config_file_path):
                 all_files_in_folders = get_all_mp4_files_in_dirs(all_folders)
 
                 #Algoritmo para dar o nome ao vídeo final, neste caso vai ser "Vido_dia_DIA-MÊS-ANO_HORAH"
-                video_day = hour.split("\\")[-2]
+                video_day = hour.split("/")[-2]
                 video_day = video_day[-2:] +"-"+ video_day[4:6] +"-"+ video_day[:-4]
-                video_name="Video_dia_"+video_day+"_"+hour.split("\\")[-1]+"H"
+                video_name="Video_dia_"+video_day+"_"+hour.split("/")[-1]+"H"
 
                 #Chamda da função que vai juntar os vídeos encontrados, recebe como parametros a lista de vídeos e o nome do vídeo final
                 joined_videos[ffmpeg_joiner(all_files_in_folders, video_name, output_file_path)]=all_files_in_folders
@@ -217,7 +217,6 @@ def join_videos_by_hour(folder_path, output_file_path, config_file_path):
     motion_file_names={}
     for video, mp4_files in joined_videos.items():
         motion_file_names.update(run_motiondetector(video, video.split('/')[-1].replace('.mp4', ''), config_file_path, output_file_path, mp4_files))
-    print(motion_file_names)
     return motion_file_names
 
 
@@ -230,13 +229,13 @@ def generate_json_with_motions(output_file_path, motion_file_names):
         firstMotion=True
         f.write('{"motions":[\n')
         for motion in motions:
-            motion_date = str(motion).split("\\")[-1].replace(".mp4", "").replace("motion ", "")
+            motion_date = str(motion).split("/")[-1].replace(".mp4", "").replace("motion ", "")
             try:
-                original_path = motion_file_names[motion_date].as_posix()
+                original_path = motion_file_names[motion_date]
             except KeyError:
                 continue
             my_json = {
-            "motion_path": str(motion.as_posix()),
+            "motion_path": str(motion),
             "motion_date": motion_date,
             "original_file_path": str(original_path)
             }
@@ -285,16 +284,14 @@ def main(argv):
 
         #Caso o argumento seja o -p(--path)
         elif opt in ("-p", "--path"):
-            folder_path = arg
+            folder_path = Path(arg).as_posix()
 
         #Caso o argumento seja o -c(--config)
         elif opt in ("-c", "--config"):
-            config_file_path = arg
+            config_file_path = Path(arg).as_posix()
         
         elif opt in ("-o", "--output"):
-            if arg[-1] == '\\' or arg[-1] == '/':
-                arg[-1]==''
-            output_file_path = arg+'/MiHomeForensics'
+            output_file_path = Path(arg+'/MiHomeForensics').as_posix()
 
         #Caso o argumento seja o -d(--day)
         elif opt in ("-d", "--day"):
