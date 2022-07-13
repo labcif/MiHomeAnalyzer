@@ -111,8 +111,8 @@ class SampleFileIngestModuleWithUI(DataSourceIngestModule):
     # Where any setup and configuration is done
     # TODO: Add any setup code that you need here.
     def startUp(self, context):
-        if not PlatformUtil.isWindowsOS():
-            raise IngestModuleException('This module only supports Windows!')
+        if not PlatformUtil.isWindowsOS() and not PlatformUtil.getOSName()=='Linux':
+            raise IngestModuleException('This module only supports Windows and Linux!')
 
         # As an example, determine if user configured a flag in UI
         if self.local_settings.getSetting("join_videos") == "hour":
@@ -143,7 +143,20 @@ class SampleFileIngestModuleWithUI(DataSourceIngestModule):
         if not os.path.exists(temp_dir):
             os.makedirs(temp_dir)
         return temp_dir
-
+    
+    """
+    def posix_path(self, path):
+        path = path.split('\\')
+        path_posix = ''
+        for i in path:
+            while '\\' in i:
+                i.replace('\\', '')
+            if i == path[-1]:
+                path_posix+=i
+            else:
+                path_posix+=i+'/'
+        return path_posix
+    """
 
     # Where the analysis is done.  Each file will be passed into here.
     # TODO: Add your analysis code in here.
@@ -177,15 +190,20 @@ class SampleFileIngestModuleWithUI(DataSourceIngestModule):
 
         module_path = os.path.dirname(os.path.abspath(__file__))
         results_dir = os.path.join(Case.getCurrentCase().getModulesOutputDirAbsPath(), SampleFileIngestModuleWithUIFactory.moduleName)
+
+        if PlatformUtil.isWindowsOS():
+            path_to_exec = os.path.join(module_path, 'MiHomeForensics.exe')
+        elif PlatformUtil.getOSName()=='Linux':
+            path_to_exec = os.path.join(module_path, 'MiHomeForensics')
         
-        cmd_args = [
-            os.path.join(module_path, 'MiHomeForensics.exe'),
-            '-p', os.path.join(results_dir, "MiHomeForensics/record"), #'C:/Users/Joao/Desktop/MergeTest/record', #os.path.join(results_dir, "record")
-            '--config', os.path.join(module_path, 'config.ini'),
-            '--output', results_dir]
+        cmd_args = (
+            path_to_exec+
+            ' -p '+ os.path.join(results_dir, "MiHomeForensics/record")+
+            ' --config '+ os.path.join(module_path, 'config.ini')+
+            ' --output '+ results_dir)
         
         if self.local_settings.getSetting("join_videos") == 'hour':
-            cmd_args.append('-t')
+            cmd_args += ' -t'
         
         elif self.local_settings.getSetting("join_videos") == 'day':
             self.log(Level.INFO, self.local_settings.getSetting("day_to_join"))
@@ -195,8 +213,8 @@ class SampleFileIngestModuleWithUI(DataSourceIngestModule):
                 self.notifyUser(IngestMessage.MessageType.WARNING, 'Wrong date format inserted!')
                 return IngestModule.ProcessResult.OK
             
-            cmd_args.append('--day')
-            cmd_args.append(self.local_settings.getSetting("day_to_join"))
+            cmd_args+= ' --day '
+            cmd_args += self.local_settings.getSetting("day_to_join")
         
         self.log(Level.INFO, 'COMMAND TO RUN: ' + str(cmd_args))
         
