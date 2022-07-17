@@ -43,7 +43,7 @@ class config(object):
                        'fps' :  parser.getint("camera", "fps"),
                        'frameBufMax' :  parser.getint("camera", "frameBufMax"),
                        'vcodec' :  parser.get("camera", "vcodec"),
-                       'recordFileExt' :  parser.get("camera", "recordFileExt"),
+                       'recordFileExt' :  'mp4',
                        'recordDir' :  parser.get("camera", "recordDir"),
                        'mark' :  parser.getboolean("camera", "mark"),
                        'saveFrames' :  parser.getboolean("camera", "saveFrames")}
