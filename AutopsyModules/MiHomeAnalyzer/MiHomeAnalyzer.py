@@ -51,7 +51,7 @@ from org.sleuthkit.datamodel import AbstractFile
 from org.sleuthkit.autopsy.datamodel import ContentUtils
 
 # TODO: Rename this to something more specific
-class SampleFileIngestModuleWithUIFactory(IngestModuleFactoryAdapter):
+class MiHomeAnalyzerWithUIFactory(IngestModuleFactoryAdapter):
     def __init__(self):
         self.settings = None
 
@@ -82,7 +82,7 @@ class SampleFileIngestModuleWithUIFactory(IngestModuleFactoryAdapter):
         if not isinstance(settings, GenericIngestModuleJobSettings):
             raise IllegalArgumentException("Expected settings argument to be instanceof GenericIngestModuleJobSettings")
         self.settings = settings
-        return SampleFileIngestModuleWithUISettingsPanel(self.settings)
+        return MiHomeAnalyzerGUISettingsPanel(self.settings)
 
 
     def isDataSourceIngestModuleFactory(self):
@@ -90,15 +90,15 @@ class SampleFileIngestModuleWithUIFactory(IngestModuleFactoryAdapter):
 
     # TODO: Update class name to one that you create below
     def createDataSourceIngestModule(self, ingestOptions):
-        return SampleFileIngestModuleWithUI(self.settings) 
+        return MiHomeAnalyzerWithUI(self.settings) 
 
 
 # File-level ingest module.  One gets created per thread.
 # TODO: Rename this to something more specific. Could just remove "Factory" from above name.
 # Looks at the attributes of the passed in file.
-class SampleFileIngestModuleWithUI(DataSourceIngestModule):
+class MiHomeAnalyzerWithUI(DataSourceIngestModule):
 
-    _logger = Logger.getLogger(SampleFileIngestModuleWithUIFactory.moduleName)
+    _logger = Logger.getLogger(MiHomeAnalyzerWithUIFactory.moduleName)
 
     def log(self, level, msg):
         self._logger.logp(level, self.__class__.__name__, inspect.stack()[1][3], msg)
@@ -134,12 +134,12 @@ class SampleFileIngestModuleWithUI(DataSourceIngestModule):
     
     def notifyUser(self, message_type, message):
         ingest_message = IngestMessage.createMessage(message_type,
-            SampleFileIngestModuleWithUIFactory.moduleName, message)
+            MiHomeAnalyzerWithUIFactory.moduleName, message)
         IngestServices.getInstance().postMessage(ingest_message)
 
     
     def createTempDir(self, data_source_name):
-        temp_dir = os.path.join(Case.getCurrentCase().getModulesOutputDirAbsPath(), SampleFileIngestModuleWithUIFactory.moduleName, data_source_name)
+        temp_dir = os.path.join(Case.getCurrentCase().getModulesOutputDirAbsPath(), MiHomeAnalyzerWithUIFactory.moduleName, data_source_name)
         if not os.path.exists(temp_dir):
             os.makedirs(temp_dir)
         return temp_dir
@@ -189,7 +189,7 @@ class SampleFileIngestModuleWithUI(DataSourceIngestModule):
         progressBar.progress('Joining Videos', 0)
 
         module_path = os.path.dirname(os.path.abspath(__file__))
-        results_dir = os.path.join(Case.getCurrentCase().getModulesOutputDirAbsPath(), SampleFileIngestModuleWithUIFactory.moduleName)
+        results_dir = os.path.join(Case.getCurrentCase().getModulesOutputDirAbsPath(), MiHomeAnalyzerWithUIFactory.moduleName)
 
         if PlatformUtil.isWindowsOS():
             path_to_exec = os.path.join(module_path, 'MiHomeForensics.exe')
@@ -224,10 +224,10 @@ class SampleFileIngestModuleWithUI(DataSourceIngestModule):
             realtime_output = process.stdout.readline().decode('utf-8')
             if realtime_output == '' and process.poll() is not None:
                 break
-            if realtime_output and joining:
+            if realtime_output:
                 msg=realtime_output.strip()
                 self.log(Level.INFO, msg)
-                if 'Configuring from file:' in str(msg):
+                if 'Configuring from file:' in str(msg) and joining:
                     progressBar.progress('Running Motion Detector', 1)
                     joining=False
                 
@@ -296,9 +296,9 @@ class SampleFileIngestModuleWithUI(DataSourceIngestModule):
         #att_comment = BlackboardAttribute(BlackboardAttribute.ATTRIBUTE_TYPE.TSK_COMMENT, 
         #    SampleFileIngestModuleWithUIFactory.moduleName, 'Detection Of Motion in Videos module detected ' + class_name + ' in this Video')
         att_path = BlackboardAttribute(self.path_attr_type, 
-            SampleFileIngestModuleWithUIFactory.moduleName, motion_path)
+            MiHomeAnalyzerWithUIFactory.moduleName, motion_path)
         att_date = BlackboardAttribute(self.date_attr_type, 
-            SampleFileIngestModuleWithUIFactory.moduleName, str(motion_date))
+            MiHomeAnalyzerWithUIFactory.moduleName, str(motion_date))
         #art.addAttributes([att_class, att_comment, att_path, att_date])
         art.addAttributes([att_path, att_date])
 
@@ -318,7 +318,7 @@ class SampleFileIngestModuleWithUI(DataSourceIngestModule):
 
 # UI that is shown to user for each ingest job so they can configure the job.
 # TODO: Rename this
-class SampleFileIngestModuleWithUISettingsPanel(IngestModuleIngestJobSettingsPanel):
+class MiHomeAnalyzerGUISettingsPanel(IngestModuleIngestJobSettingsPanel):
     # Note, we can't use a self.settings instance variable.
     # Rather, self.local_settings is used.
     # https://wiki.python.org/jython/UserGuide#javabean-properties
@@ -328,7 +328,7 @@ class SampleFileIngestModuleWithUISettingsPanel(IngestModuleIngestJobSettingsPan
     # generated read-only property overshadows the instance-variable -
     # 'settings'
 
-    _logger = Logger.getLogger(SampleFileIngestModuleWithUIFactory.moduleName)
+    _logger = Logger.getLogger(MiHomeAnalyzerWithUIFactory.moduleName)
 
     # We get passed in a previous version of the settings so that we can
     # prepopulate the UI

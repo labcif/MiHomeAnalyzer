@@ -85,7 +85,7 @@ def ffmpeg_joiner(videos_to_join, out_file_name, output_file_path):
     #ffOutput = ffOutput.global_args('-stats')
 
     # something, something, run.
-    #ffOutput.run(overwrite_output=True)
+    #ffOutput.run(overwrite_output=True))
     process = Popen('ffmpeg -f concat -safe 0 -loglevel error -stats -i '+ input_files_path +' -y ' + outFile, stdout=PIPE, stderr=STDOUT, shell = True, bufsize = 1, encoding='utf-8', errors = 'replace')
     while True:
         realtime_output = process.stdout.readline()
@@ -94,7 +94,6 @@ def ffmpeg_joiner(videos_to_join, out_file_name, output_file_path):
         if realtime_output:
             print(realtime_output.strip(), flush=False, end='\r')
             stdout.flush()
-
     #Removing temp file of videos paths
     remove(input_files_path)
 
@@ -113,7 +112,6 @@ def run_motiondetector(joined_video, result_name, config_file_path, output_file_
     # Writing our configuration file to 'example.ini'
     with open(config_file_path, 'w') as configfile:
         parser.write(configfile)
-    
     
     videoLoop = videoloop.videoloop(config_file_path, mp4_files)
     motion_file_names = videoLoop.run()
