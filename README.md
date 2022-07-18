@@ -65,7 +65,7 @@ In order to integrate **MiHomeAnalyzer** with [Autopsy](https://www.autopsy.com/
 
 Place both folders ([MiHomeAnalyzer](./AutopsyModules/MiHomeAnalyzer)) and ([MiHomeAnalyzer_Report](./AutopsyModules/MiHomeAnalyzer_Report)) in the python_modules folder of Autopsy
 
-Then, in order to execute [MiHomeAnalyzer](./AutopsyModules/MiHomeAnalyzer), you have to place in the same folder the [Executable file](./MiHomeForensics/Pre-Compiled) for you Operating System
+Then, in order to execute [MiHomeAnalyzer](./AutopsyModules/MiHomeAnalyzer), you have to place in the same folder the [Executable file](./MiHomeForensics/Pre-Compiled) for your Operating System
 <br>
 
 ## Authors
