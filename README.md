@@ -35,7 +35,7 @@ The only dependency required by this application is FFmpeg.
 ## Compilation / Python execution
 ### In order to execute this application outside Autopsy you have to install the following libraries (tested on a Fresh Installation of both Operating Systems):
 - **codeferm**, a self modified version of [MotionDetector's code](https://github.com/sgjava/motiondetector), can be found [here](./MotionDetector/)
-- **pencv-python** (version 4.5.3.56, tested on **Windows**, or 4.5.5.64, tested on **Linux**)
+- **opencv-python** (version 4.5.3.56, tested on **Windows**, or 4.5.5.64, tested on **Linux**)
 - **ffmpeg-python**
 - **psutil**
 - **pyinstaller**, if you want to compile recompile the application
