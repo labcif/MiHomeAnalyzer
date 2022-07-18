@@ -15,7 +15,7 @@ The only dependency required by this application is FFmpeg.
 <details>
 <summary>Click to see FFmpeg installation on Windows!</summary>
 
-- Download the [.7z file](https://ffmpeg.org/download.html) <br>(Oficial Mirror, check it out [here](https://ffmpeg.org/download.html#build-windows)
+- Download the [.7z file](https://www.gyan.dev/ffmpeg/builds/ffmpeg-git-full.7z) <br>(Oficial Mirror, check it out [here](https://ffmpeg.org/download.html#build-windows)
 - Extract the contents to on folder named "ffmpeg"
 - Place the folder in "C:\Program Files"
 - Run the following command to add the folder to system variables: <br>
@@ -61,9 +61,9 @@ Both the Executable application and the Python script need a [config file](./Mot
 In order to integrate **MiHomeAnalyzer** with [Autopsy](https://www.autopsy.com/), there are two modules:
 
  * [MiHomeAnalyzer](./AutopsyModules/MiHomeAnalyzer): uses the MiHomeForensics application in order to detect motion in joined videos
- * [MiHomeAnalyzer_Report](./AutopsyModules/MiHomeAnalyzer): exports a HTML report with the results of the ingest module
+ * [MiHomeAnalyzer_Report](./AutopsyModules/MiHomeAnalyzer_Report): exports a HTML report with the results of the ingest module
 
-Place both folders ([MiHomeAnalyzer](./AutopsyModules/MiHomeAnalyzer)) and ([MiHomeAnalyzer_Report](./AutopsyModules/MiHomeAnalyzer)) in the python_modules folder of Autopsy
+Place both folders ([MiHomeAnalyzer](./AutopsyModules/MiHomeAnalyzer)) and ([MiHomeAnalyzer_Report](./AutopsyModules/MiHomeAnalyzer_Report)) in the python_modules folder of Autopsy
 
 Then, in order to execute [MiHomeAnalyzer](./AutopsyModules/MiHomeAnalyzer), you have to place in the same folder the [Executable file](./MiHomeForensics/Pre-Compiled) for you Operating System
 <br>
