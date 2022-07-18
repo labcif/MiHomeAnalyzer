@@ -15,8 +15,8 @@ The only dependency required by this application is FFmpeg.
 <details>
 <summary>Click to see FFmpeg installation on Windows!</summary>
 
-- Download the [.7z file](https://www.gyan.dev/ffmpeg/builds/ffmpeg-git-full.7z) <br>(Oficial Mirror, check it out [here](https://ffmpeg.org/download.html#build-windows)
-- Extract the contents to on folder named "ffmpeg"
+- Download the [.7z file](https://www.gyan.dev/ffmpeg/builds/ffmpeg-git-full.7z) <br>(Oficial Mirror, check it out [here](https://ffmpeg.org/download.html#build-windows))
+- Extract the contents to one folder named "ffmpeg"
 - Place the folder in "C:\Program Files"
 - Run the following command to add the folder to system variables: <br>
 ```setx /m PATH "C:\Program Files\ffmpeg\bin;%PATH%```
