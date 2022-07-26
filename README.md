@@ -70,7 +70,7 @@ Then, in order to execute [MiHomeAnalyzer](./AutopsyModules/MiHomeAnalyzer), you
 
 ## Authors
 
- * ![](./Images/joao.jpg) <br> João Manuel Vieria Silva (Instituto Politécnico de Leiria - Portugal)
+ * ![](./Images/joao.jpg) <br> João Manuel Vieira Silva (Instituto Politécnico de Leiria - Portugal)
 
  * ![](./Images/pedro.jpg) <br> Pedro Pescadinha Veigas (Instituto Politécnico de Leiria - Portugal)
 
